@@ -4,15 +4,15 @@ GO
 USE ex_triggers_07
 GO
 CREATE TABLE cliente (
-codigo		INT			NOT NULL,
-nome		VARCHAR(70)	NOT NULL
+codigo		    INT			        NOT NULL,
+nome		    VARCHAR(70)	        NOT NULL
 PRIMARY KEY(codigo)
 )
 GO
 CREATE TABLE venda (
-codigo_venda	INT				NOT NULL,
-codigo_cliente	INT				NOT NULL,
-valor_total		DECIMAL(7,2)	NOT NULL
+codigo_venda	INT				    NOT NULL,
+codigo_cliente	INT				    NOT NULL,
+valor_total		DECIMAL(7,2)	    NOT NULL
 PRIMARY KEY (codigo_venda)
 FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo)
 )
@@ -23,20 +23,19 @@ total_pontos	DECIMAL(4,1)		NOT NULL
 PRIMARY KEY (codigo_cliente)
 FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo)
 )
-
+GO
 INSERT INTO cliente (codigo, nome)
 VALUES (1, 'Fulano'),
        (2, 'Beltrano'),
 	   (3, 'Cicrano'),
 	   (4, 'Deltrano')
-
-
+GO
 INSERT INTO venda(codigo_venda, codigo_cliente, valor_total)
-VALUES (1, 1, 100.00),
+VALUES (1, 1, 100.00), 
 	   (2, 2, 200.00),
-       (3, 3, 300.00),
+	   (3, 3, 300.00),
 	   (4, 4, 400.00)
-
+GO
 -- Para não prejudicar a tabela venda, nenhum produto pode ser deletado, mesmo que não venha mais a ser vendido
 CREATE TRIGGER t_delvenda ON venda
 AFTER DELETE
@@ -45,10 +44,10 @@ BEGIN
 	ROLLBACK TRANSACTION
 	RAISERROR('Não é possível excluir produtos', 16, 1)
 END
-
+GO
 DELETE venda
 WHERE codigo_venda = 1
-
+GO
 -- Para não prejudicar os relatórios e a contabilidade, a tabela venda não pode ser alterada. 
 -- Ao invés de alterar a tabela venda deve-se exibir uma tabela com o nome do último cliente que comprou e o valor da última compra
 CREATE TRIGGER t_ultima_compra ON venda
@@ -63,7 +62,7 @@ BEGIN
     SELECT * FROM #table
     RAISERROR('Não é possível atualizar tabela', 16, 1)
 END
-
+GO
 -- Após a inserção de cada linha na tabela venda, 10% do total deverá ser transformado em pontos.
 -- Se o cliente ainda não estiver na tabela de pontos, deve ser inserido automaticamente após sua primeira compra
 -- Se o cliente atingir 1 ponto, deve receber uma mensagem (PRINT SQL Server) dizendo que ganhou
